@@ -1,8 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
-
+import Loader from "react-loader-spinner";
 import { CharacterList } from "../components";
-// import actions
+import { getChar } from "../actions";
+import { POINT_CONVERSION_COMPRESSED } from "constants";
 
 class CharacterListView extends React.Component {
   constructor() {
@@ -10,12 +11,15 @@ class CharacterListView extends React.Component {
   }
 
   componentDidMount() {
-    // call our action
+    this.props.getChar();
   }
 
   render() {
-    if (this.props.fetching) {
-      // return something here to indicate that you are fetching data
+    if (this.props.isLoading) {
+      <div>
+        <h2>Fetching Character Information</h2>
+        <Loader type="Circles" color="black" height={80} width={80} />
+      </div>;
     }
     return (
       <div className="CharactersList_wrapper">
@@ -25,11 +29,12 @@ class CharacterListView extends React.Component {
   }
 }
 
-// our mapStateToProps needs to have two properties inherited from state
-// the characters and the fetching boolean
+const mapStateToProps = state => ({
+  characters: state.charsReducer.characters,
+  isLoading: state.charsReducer.isLoading
+});
+
 export default connect(
-  null /* mapStateToProps replaces null here */,
-  {
-    /* action creators go here */
-  }
+  mapStateToProps,
+  { getChar }
 )(CharacterListView);
